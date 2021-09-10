@@ -183,13 +183,70 @@ module.exports = ideasRouter;
 const {
   getAllFromDatabase,
 } = require('./db');
+
+ideasRouter.get('/', (req, res, next) => {
+  const allIdeas = getAllFromDatabase('ideas');
+  res.send(allIdeas);
+})
+```
+
+- POST /api/ideas to create a new idea and save it to the database.
+```javascript
+const {addToDatabase} = require('./db')
+
+ideasRouter.post('/', (req, res, next) => {
+  const newIdea = addToDatabase('ideas', req.body);
+  res.send(newIdea);
+})
+```
+
+- GET /api/ideas/:ideaId to get a single idea by id.
+
+```javascript
+const {getFromDatabaseById} = require('./db')
+
+ideasRouter.param('ideaId', (req, res, next, id) => {
+  const idea = getFromDatabaseById('idea', id);
+  if (idea) {
+    req.idea = idea;
+    next();
+  } else {
+    res.status(404).send();
+  }
+})
+
+
+ideasRouter.get('/:ideaId', (req, res, next) => {
+  res.send(req.idea);
+})
+```
+
+- PUT /api/ideas/:ideaId to update a single idea by id.
+
+```javascript
+const {updateInstanceInDatabase} = require('./db')
+
+ideasRouter.put('/:ideaId', (req, res, next) => {
+  const updatedIdeaInstance = updateInstanceInDatabase('ideas', req.body);
+  res.send(updatedIdeaInstance);
+})
+```
+
+- DELETE /api/ideas/:ideaId to delete a single idea by id.
+```javascript
+const {deleteFromDatabasebyId} = require('./db')
+
+ideasRouter.delete('/ideaId', (req, res, next) => {
+  const deletedIdeaInstance = deleteFromDatabasebyId('ideas', req.params.ideaId);
+  if (deletedIdeaInstance === true) {
+    res.status(204).send();
+  } else {
+    res.status(500).send();
+  }
+})
 ```
 
 
-- POST /api/ideas to create a new idea and save it to the database.
-- GET /api/ideas/:ideaId to get a single idea by id.
-- PUT /api/ideas/:ideaId to update a single idea by id.
-- DELETE /api/ideas/:ideaId to delete a single idea by id.
 - `/api/meetings`
   - GET /api/meetings to get an array of all meetings.
   - POST /api/meetings to create a new meeting and save it to the database.
