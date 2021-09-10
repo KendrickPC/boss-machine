@@ -7,12 +7,12 @@ const apiRouter = express.Router();
 // '/api/ideas'
 // '/api/meetings'
 
-const minionsRouter = require('/minions', minionsRouter);
-const ideasRouter = require('/ideas', ideasRouter);
-const meetingsRouter = require('/meetings', meetingsRouter);
+const minionsRouter = require('./minions');
+const ideasRouter = require('./ideas');
+// const meetingsRouter;
 
 apiRouter.use('/minions', minionsRouter);
 apiRouter.use('/ideas', ideasRouter);
-apiRouter.use('/meetings', meetingsRouter);
+// apiRouter.use('/meetings', meetingsRouter);
 
 module.exports = apiRouter;
