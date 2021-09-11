@@ -12,7 +12,8 @@ const {
 // - `/api/meetings`
 //   - GET /api/meetings to get an array of all meetings.
 meetingsRouter.get('/', (req, res, next) => {
-  res.send(getAllFromDatabase('meetings'));
+  const allMeetings = getAllFromDatabase('meetings');
+  res.send(allMeetings);
 })
 
 //   - POST /api/meetings to create a new meeting and save it to the database.

@@ -104,7 +104,8 @@ minionsRouter.get('/', (req, res, next) => {
 ```
 
 - POST /api/minions to create a new minion and save it to the database.
-
+- POST request bodies will not have an `id` property, you will have to set it based on the next id in sequence.
+- For all `/api/minions` and `/api/ideas routes`, any POST or PUT requests will send their new/updated resources in the request body. 
 Inside of minions.js located inside the server folder:
 
 ```javascript
@@ -137,7 +138,7 @@ minionsRouter.get('/:minionId', (req, res, next) => {
 
 ```
 - PUT /api/minions/:minionId to update a single minion by id.
-
+- For all `/api/minions` and `/api/ideas routes`, any POST or PUT requests will send their new/updated resources in the request body. 
 ```javascript
 const {updatedInstanceInDatabase} = require('./db');
 
@@ -191,6 +192,8 @@ ideasRouter.get('/', (req, res, next) => {
 ```
 
 - POST /api/ideas to create a new idea and save it to the database.
+- POST request bodies will not have an `id` property, you will have to set it based on the next id in sequence.
+- For all `/api/minions` and `/api/ideas routes`, any POST or PUT requests will send their new/updated resources in the request body. 
 ```javascript
 const {addToDatabase} = require('./db')
 
@@ -222,7 +225,7 @@ ideasRouter.get('/:ideaId', (req, res, next) => {
 ```
 
 - PUT /api/ideas/:ideaId to update a single idea by id.
-
+- For all `/api/minions` and `/api/ideas routes`, any POST or PUT requests will send their new/updated resources in the request body. 
 ```javascript
 const {updateInstanceInDatabase} = require('./db')
 
@@ -246,18 +249,43 @@ ideasRouter.delete('/ideaId', (req, res, next) => {
 })
 ```
 
-
 ## - `/api/meetings`
 - GET /api/meetings to get an array of all meetings.
+```javascript
+const {getAllFromDatabase} = require('./db');
 
-
+meetingsRouter.get('/', (req, res, next) => {
+  const allMeetings = getAllFromDatabase('meetings');
+  res.send(allMeetings);
+})
+```
 
 - POST /api/meetings to create a new meeting and save it to the database.
+- For `/api/meetings` POST route, no request body is necessary, as meetings are generated automatically by the server upon request. Use the provided `createMeeting` function exported from **db.js** to create a new meeting object.
+
+```javascript
+const { addToDatabase, createMeeting } = require('./db');
+
+meetingsRouter.post('/', (req, res, next) => {
+  const newMeeting = addToDatabase('meetings', createMeeting())
+  res.status(201).send(newMeeting);
+})
+```
+
 - DELETE /api/meetings to delete _all_ meetings from the database.
 
-For all `/api/minions` and `/api/ideas routes`, any POST or PUT requests will send their new/updated resources in the request body. POST request bodies will not have an `id` property, you will have to set it based on the next id in sequence.
+```javascript
+const {deleteAllFromDatabase} = require('./db');
 
-For `/api/meetings` POST route, no request body is necessary, as meetings are generated automatically by the server upon request. Use the provided `createMeeting` function exported from **db.js** to create a new meeting object.
+meetingsRouter.delete('/', (req, res, next) => {
+  const meetingKillSwitch = deleteAllFromDatabase('meetings');
+  res.status(204).send(meetingKillSwitch);
+})
+```
+
+
+
+
 
 
 [How to use Param function in Router](https://www.tabnine.com/code/javascript/functions/express/Router/param)
